@@ -4,29 +4,31 @@ public class Jugador : Personaje
 {
     [SerializeField] protected float fuerzaSalto;
     Rigidbody2D miRigidBody;
-    bool saltar;
+    Animator miAnimator;
+    [SerializeField] public bool Saltar { get; set; }
+
+    float movimientoHorizontal;
     public override void Start()
     {
         base.Start();
-        saltar = false;
-        miRigidBody = transform.GetComponent<Rigidbody2D>();
+        Saltar = false;
+        miRigidBody = GetComponent<Rigidbody2D>();
+        miAnimator = GetComponent<Animator>();
     }
 
     void Update()
     {
-		 Teclado();
+        Teclado();
     }
     void FixedUpdate()
     {
-        float movimientoHorizontal = Input.GetAxis("Horizontal");
-       
         Girar(movimientoHorizontal);
         Movimiento(movimientoHorizontal);
     }
 
     void Girar(float movimientoHorizontal)
     {
-        if (movimientoHorizontal > 0 && !mirandoDerecha || movimientoHorizontal < 0 && mirandoDerecha)
+        if (miRigidBody.velocity.y == 0 && (movimientoHorizontal > 0 && !mirandoDerecha || movimientoHorizontal < 0 && mirandoDerecha))
         {
             CambiarDireccion();
         }
@@ -36,17 +38,22 @@ public class Jugador : Personaje
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            saltar = true;
+            Saltar = true;
         }
+        movimientoHorizontal = Input.GetAxis("Horizontal");
     }
 
     void Movimiento(float movimientoHorizontal)
     {
-        if (saltar)
+        if (Saltar && !miAnimator.GetCurrentAnimatorStateInfo(0).IsName("Saltar") && miRigidBody.velocity.y == 0)
         {
+            miAnimator.SetTrigger("Saltar");
             miRigidBody.AddForce(new Vector2(0, fuerzaSalto));
-			saltar = false;
         }
-		miRigidBody.velocity = new Vector2(movimientoHorizontal * velocidadMovimiento, miRigidBody.velocity.y);
+        if (miRigidBody.velocity.y == 0)
+        {
+            miRigidBody.velocity = new Vector2(movimientoHorizontal * velocidadMovimiento, miRigidBody.velocity.y);
+        }
+
     }
 }
