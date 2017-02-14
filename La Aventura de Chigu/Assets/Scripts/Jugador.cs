@@ -52,6 +52,7 @@ public class Jugador : Personaje
         }
         if (miRigidBody.velocity.y == 0)
         {
+            miAnimator.SetFloat("Velocidad",Mathf.Abs(movimientoHorizontal));
             miRigidBody.velocity = new Vector2(movimientoHorizontal * velocidadMovimiento, miRigidBody.velocity.y);
         }
 

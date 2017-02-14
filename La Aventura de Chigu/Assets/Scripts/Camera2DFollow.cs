@@ -19,7 +19,9 @@ namespace UnityStandardAssets._2D
         // Use this for initialization
         private void Start()
         {
-            m_LastTargetPosition = target.position;
+            Vector3 pos = new Vector3(target.position.x, transform.position.y, transform.position.z);
+            //m_LastTargetPosition = target.position;
+            m_LastTargetPosition = pos;
             m_OffsetZ = (transform.position - target.position).z;
             transform.parent = null;
         }
@@ -35,19 +37,21 @@ namespace UnityStandardAssets._2D
 
             if (updateLookAheadTarget)
             {
-                m_LookAheadPos = lookAheadFactor*Vector3.right*Mathf.Sign(xMoveDelta);
+                m_LookAheadPos = lookAheadFactor * Vector3.right * Mathf.Sign(xMoveDelta);
             }
             else
             {
-                m_LookAheadPos = Vector3.MoveTowards(m_LookAheadPos, Vector3.zero, Time.deltaTime*lookAheadReturnSpeed);
+                m_LookAheadPos = Vector3.MoveTowards(m_LookAheadPos, Vector3.zero, Time.deltaTime * lookAheadReturnSpeed);
             }
 
-            Vector3 aheadTargetPos = target.position + m_LookAheadPos + Vector3.forward*m_OffsetZ;
+            Vector3 aheadTargetPos = target.position + m_LookAheadPos + Vector3.forward * m_OffsetZ;
             Vector3 newPos = Vector3.SmoothDamp(transform.position, aheadTargetPos, ref m_CurrentVelocity, damping);
 
             transform.position = newPos;
+            Vector3 pos = new Vector3(target.position.x, transform.position.y, transform.position.z);
+            //m_LastTargetPosition = target.position;
+            m_LastTargetPosition = pos;
 
-            m_LastTargetPosition = target.position;
         }
     }
 }
